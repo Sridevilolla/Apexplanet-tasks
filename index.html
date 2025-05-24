@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task 2 - Intermediate HTML, CSS, JS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f8fb;
+    }
+
+    header {
+      background-color: #0b6fa4;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    .section {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      color: #0b6fa4;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin: 0.5rem 0 0.3rem;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #0b6fa4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0a5b8c;
+    }
+
+    /* To-Do List */
+    #todoList li {
+      list-style: none;
+      background: #e1f5fe;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-btn {
+      background: red;
+      border: none;
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Image Gallery */
+    #imageGallery {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+    }
+
+    #imageGallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .image-container {
+      position: relative;
+    }
+
+    .image-container button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: rgba(255, 0, 0, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ApexPlanet Task - 2</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Form</a>
+      <a href="#">To-Do</a>
+      <a href="#">Gallery</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Contact Form Section -->
+    <div class="section">
+      <h2>Contact Form</h2>
+      <form id="contactForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" />
+
+        <div class="error" id="formError"></div>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <!-- To-Do List Section -->
+    <div class="section">
+      <h2>To-Do List</h2>
+      <input type="text" id="taskInput" placeholder="Enter a task" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="todoList"></ul>
+    </div>
+
+    <!-- Image Gallery Section -->
+    <div class="section">
+      <h2>Image Gallery</h2>
+      <input type="text" id="imageUrlInput" placeholder="Enter image URL" />
+      <button onclick="addImage()">Add Image</button>
+      <div id="imageGallery"></div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Form Validation
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const error = document.getElementById('formError');
+
+      error.textContent = '';
+
+      const emailRegex = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+      if (!name) {
+        error.textContent = 'Name is required.';
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        error.textContent = 'Please enter a valid email address.';
+        return;
+      }
+
+      alert('Form submitted successfully!');
+      this.reset();
+    });
+
+    // To-Do List Functions
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const task = taskInput.value.trim();
+      if (task === '') return;
+
+      const li = document.createElement('li');
+      li.innerHTML = `${task} <button class="delete-btn" onclick="removeTask(this)">X</button>`;
+      document.getElementById('todoList').appendChild(li);
+      taskInput.value = '';
+    }
+
+    function removeTask(btn) {
+      btn.parentElement.remove();
+    }
+
+    // Image Gallery Functions
+    function addImage() {
+      const url = document.getElementById('imageUrlInput').value.trim();
+      if (!url) return;
+
+      const container = document.createElement('div');
+      container.className = 'image-container';
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = 'Gallery Image';
+
+      const delBtn = document.createElement('button');
+      delBtn.innerHTML = '×';
+      delBtn.onclick = function () {
+        container.remove();
+      };
+
+      container.appendChild(img);
+      container.appendChild(delBtn);
+      document.getElementById('imageGallery').appendChild(container);
+
+      document.getElementById('imageUrlInput').value = '';
+    }
+  </script>
+</body>
+</html>
