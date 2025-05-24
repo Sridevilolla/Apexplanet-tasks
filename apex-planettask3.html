@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Styling & JavaScript</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      color: #333;
+    }
+
+    header, footer {
+      background: #00796b;
+      color: white;
+      text-align: center;
+      padding: 1em;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    section {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .options button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background-color: #00796b;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #004d40;
+    }
+
+    .joke-card button {
+      background-color: #0288d1;
+      color: white;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
+    .joke-card button:hover {
+      background-color: #01579b;
+    }
+
+    .next-btn {
+      display: none;
+      margin-top: 1rem;
+      background-color: #6a1b9a;
+      color: white;
+      padding: 0.8rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .next-btn:hover {
+      background-color: #4a148c;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Learn with Fun!</h1>
+  </header>
+
+  <main>
+    <!-- Quiz Section -->
+    <section class="quiz-card">
+      <h2>JavaScript Quiz</h2>
+      <p id="question">Loading question...</p>
+      <div class="options" id="options"></div>
+      <p id="result"></p>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+    </section>
+
+    <!-- Joke API Section -->
+    <section class="joke-card">
+      <h2>Want a Laugh?</h2>
+      <button onclick="fetchJoke()">Get a Joke</button>
+      <p id="joke"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 ApexPlanet</p>
+  </footer>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the result of 2 + '2' in JavaScript?",
+        options: ["22", "4", "NaN"],
+        correct: "22"
+      },
+      {
+        question: "What does typeof NaN return in JavaScript?",
+        options: ["number", "NaN", "undefined"],
+        correct: "number"
+      },
+      {
+        question: "Which keyword is used to declare a constant in JavaScript?",
+        options: ["let", "const", "var"],
+        correct: "const"
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function loadQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById("question").textContent = q.question;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        optionsDiv.appendChild(btn);
+      });
+      document.getElementById("result").textContent = "";
+      document.getElementById("nextBtn").style.display = "none";
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[currentIndex].correct;
+      const result = document.getElementById("result");
+      if (selected === correct) {
+        result.textContent = "✅ Correct!";
+        result.style.color = "green";
+      } else {
+        result.textContent = "❌ Incorrect. Try again!";
+        result.style.color = "red";
+      }
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentIndex = (currentIndex + 1) % questions.length;
+      loadQuestion();
+    }
+
+    function fetchJoke() {
+      const jokePara = document.getElementById("joke");
+      fetch("https://official-joke-api.appspot.com/random_joke")
+        .then(res => res.json())
+        .then(data => {
+          jokePara.textContent = `${data.setup} - ${data.punchline}`;
+        })
+        .catch(() => {
+          jokePara.textContent = "Oops! Couldn't fetch a joke.";
+        });
+    }
+
+    // Load first question on page load
+    window.onload = loadQuestion;
+  </script>
+</body>
+</html>
