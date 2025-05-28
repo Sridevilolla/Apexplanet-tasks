@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classic Light Project</title>
+  <style>
+    
+    * {
+      box-sizing: border-box;
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: lavender;
+      color: #2a4d69;
+    }
+
+    nav {
+      width: 240px;
+      background-color: rgba(184, 135, 11, 0.162);
+      padding: 20px;
+      position: fixed;
+      height: 100%;
+    }
+
+    nav h2 {
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    nav ul {
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 15px 0;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    nav ul li:hover,
+    nav ul li.active {
+      background-color: lavender;
+    }
+
+    main {
+      margin-left: 260px;
+      padding: 30px;
+      width: calc(100% - 260px);
+    }
+
+    section {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    /* Portfolio */
+    #portfolio {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .portfolio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .portfolio-header img {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      border: 4px solid #2a4d69;
+    }
+
+    .projects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: rgba(184, 135, 11, 0.162);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 240px;
+    }
+
+    /* Shared To-Do and Product Section */
+    #todo, #products {
+      background-color: rgba(184, 135, 11, 0.162);
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    .todo, .filters {
+      margin-bottom: 20px;
+    }
+
+    .todo input, .todo button, .filters input, .filters select {
+      padding: 10px;
+      margin-right: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .todo button {
+      background-color: #2a4d69;
+      color: white;
+      cursor: pointer;
+    }
+
+    .todo ul li {
+      background: rgba(184, 135, 11, 0.162);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .todo ul li.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .product {
+      background-color: rgba(184, 135, 11, 0.1);
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 220px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .product h4 {
+      margin: 10px 0 5px;
+    }
+  </style>
+
+</head>
+<body>
+  <nav>
+    <h2>Classic Menu</h2>
+    <ul>
+      <li class="active" onclick="switchTab('portfolio')">Portfolio</li>
+      <li onclick="switchTab('todo')">To-Do List</li>
+      <li onclick="switchTab('products')">Products</li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Portfolio -->
+    <section id="portfolio" class="active">
+      <div class="portfolio-header">
+        <div>
+          <h1>LOLLA SRIDEVI</h1>
+          <p>Developer with a passion for elegant UI and efficient code.</p>
+        </div>
+        <img src="girlpic.jpeg" alt="Profile Picture">
+      </div>
+
+      <!-- About Section -->
+      <div style="margin-bottom: 30px;">
+        <h2>About Me</h2>
+        <p>
+          I'm a web developer enthusiastic about building elegant, efficient, and accessible web experiences.
+          Skilled in HTML, CSS, JavaScript, and interested in cloud computing and cybersecurity.
+        </p>
+      </div>
+
+      <!-- Projects Section -->
+      <h2>Projects</h2>
+      <div class="projects">
+        <div class="card">
+          <h3>Software Development</h3>
+          <p>Organized development with agile and modern methods.</p>
+        </div>
+        <div class="card">
+          <h3>Cloud Project</h3>
+          <p>Scalable infrastructure and deployment pipelines.</p>
+        </div>
+        <div class="card">
+          <h3>Cyber Security</h3>
+          <p>Audits, training, and real-time monitoring systems.</p>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div style="margin-top: 30px;">
+        <h2>Contact</h2>
+        <form onsubmit="event.preventDefault(); alert('Message sent!');" style="margin-top: 10px;">
+          <input type="text" placeholder="Your Name" required style="padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+          <input type="email" placeholder="Your Email" required style="padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+          <textarea placeholder="Your Message" required style="padding: 10px; margin: 8px 0; width: 100%; height: 100px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+          <button type="submit" style="padding: 10px 20px; background-color: #2a4d69; color: white; border: none; border-radius: 6px; cursor: pointer;">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- To-Do List -->
+    <section id="todo">
+      <h2>To-Do List</h2>
+      <div class="todo">
+        <input type="text" id="todoInput" placeholder="New task">
+        <button onclick="addTodo()">Add</button>
+        <ul id="todoList"></ul>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section id="products">
+      <h2>Products</h2>
+      <div class="filters">
+        <input type="text" id="filterInput" placeholder="Search by name" oninput="filterProducts()" />
+        <label>Sort by:
+          <select onchange="sortProducts(this.value)">
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+          </select>
+        </label>
+      </div>
+      <div class="products" id="productContainer"></div>
+    </section>
+  </main>
+
+  <script>
+    // Tab switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('main section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('nav ul li').forEach(li => {
+        li.classList.remove('active');
+      });
+      const selected = Array.from(document.querySelectorAll('nav ul li'))
+        .find(li => li.textContent.toLowerCase().includes(tabId));
+      if (selected) selected.classList.add('active');
+    }
+
+    // To-Do List Logic
+    const todoInput = document.getElementById('todoInput');
+    const todoList = document.getElementById('todoList');
+
+    function addTodo() {
+      const task = todoInput.value.trim();
+      if (!task) return;
+      const li = document.createElement('li');
+      li.innerHTML = `${task} <button onclick="removeTodo(this)">❌</button>`;
+      li.addEventListener('click', () => {
+        li.classList.toggle('completed');
+        saveTodos();
+      });
+      todoList.appendChild(li);
+      saveTodos();
+      todoInput.value = '';
+    }
+
+    function removeTodo(button) {
+      button.parentElement.remove();
+      saveTodos();
+    }
+
+    function saveTodos() {
+      const tasks = Array.from(todoList.children).map(li => ({
+        text: li.firstChild.textContent.trim(),
+        completed: li.classList.contains('completed')
+      }));
+      localStorage.setItem('todos', JSON.stringify(tasks));
+    }
+
+    function loadTodos() {
+      const tasks = JSON.parse(localStorage.getItem('todos')) || [];
+      tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.innerHTML = `${task.text} <button onclick="removeTodo(this)">❌</button>`;
+        if (task.completed) li.classList.add('completed');
+        li.addEventListener('click', () => {
+          li.classList.toggle('completed');
+          saveTodos();
+        });
+        todoList.appendChild(li);
+      });
+    }
+
+    // Products logic
+    const originalProducts = [
+      { name: "cooker", price: 1000, image: "cooker.jpg" },
+      { name: "t-shirt", price: 2000, image: "t-shirt1.avif" },
+      { name: "shoes", price: 2500, image: "shoes.jpg" },
+      { name: "mobilephone", price: 1500, image: "mobilephone.jpg" },
+      { name: "laptop", price: 1800, image: "laptop.jpg" },
+      { name: "watch", price: 1800, image: "watch.jpg" },
+      { name: "frocks", price: 1800, image: "frocks.jpg" },
+      { name: "earphones", price: 1800, image: "earphones.jpg" },
+      { name: "shirt", price: 1000, image: "shirt.jpeg" },
+      { name: "shirt", price: 1000, image: "shirt2.jpeg" },
+      { name: "shirt", price: 1000, image: "shirt3.jpeg" },
+      { name: "shirt", price: 800, image: "shirt4.jpeg" },
+      { name: "laptop", price: 30000, image: "applelaptop.jpeg" },
+      { name: "frocks", price: 500, image: "baby frock.jpg" },
+      { name: "frocks", price: 5000, image: "black frock.jpg" },
+      { name: "frocks", price: 500, image: "baby3.jpg" },
+      { name: "laptop", price: 2000, image: "dell laptop.webp" },
+      { name: "laptop", price: 3000, image: "hplaptop.jpeg" },
+      { name: "laptop", price: 4000, image: "windows laptop.png" },
+      { name: "shoes", price: 5000, image: "pink shoes.jpeg" },
+      { name: "shoes", price: 3000, image: "sparkshoes.jpeg" },
+      { name: "laptop", price: 4000, image: "lenovolaptop.webp" },
+      { name: "cooker", price: 5000, image: "cooker.jpg" }
+    ];
+
+    let filteredProducts = [...originalProducts];
+
+    function renderProducts() {
+      const container = document.getElementById('productContainer');
+      container.innerHTML = '';
+      filteredProducts.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <h4>${p.name}</h4>
+          <p>Price: ₹${p.price}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function sortProducts(criteria) {
+      filteredProducts.sort((a, b) => {
+        if (criteria === 'name') return a.name.localeCompare(b.name);
+        if (criteria === 'price') return a.price - b.price;
+      });
+      renderProducts();
+    }
+
+    function filterProducts() {
+      const query = document.getElementById('filterInput').value.toLowerCase();
+      filteredProducts = originalProducts.filter(p => p.name.toLowerCase().includes(query));
+      renderProducts();
+    }
+
+    window.onload = () => {
+      loadTodos();
+      renderProducts();
+    };
+  </script>
+</body>
+</html>
