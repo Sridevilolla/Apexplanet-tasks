@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PaintingStore - E-Commerce</title>
+  <style>
+    :root {
+      --main-color: #f9f1f1; /* light background */
+      --accent-color: #800000; /* maroon */
+      --text-color: #222;
+      --card-bg: white;
+      --shadow-light: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius-md: 10px;
+      --padding-sm: 15px;
+      --padding-md: 20px;
+      --gap-md: 20px;
+      --button-hover-darken: #6a0000; /* Slightly darker maroon on hover */
+      --secondary-button-color: #6c757d; /* Grey for close/secondary buttons */
+      --secondary-button-hover: #5a6268;
+    }
+
+    /* Basic Reset & Box Sizing */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif; /* Added Arial as fallback */
+      line-height: 1.6;
+      background-color: var(--main-color);
+      color: var(--text-color);
+      min-height: 100vh; /* Ensure body takes full viewport height */
+      display: flex;
+      flex-direction: column; /* For sticky footer */
+    }
+
+    /* Header & Navigation */
+    header {
+      background: var(--accent-color);
+      padding: var(--padding-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      color: white;
+    }
+
+    .logo {
+      font-size: 28px; /* Slightly larger logo */
+      font-weight: bold;
+      margin-bottom: 0; /* Reset margin for flex item */
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: flex-end; /* Align right on desktop */
+      margin-top: 0; /* Reset margin for flex item */
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 12px; /* Increased padding for better click area */
+      border-radius: 5px;
+      transition: background-color 0.2s ease;
+      white-space: nowrap; /* Prevent nav items from breaking lines */
+    }
+
+    nav a:hover, nav a:focus,
+    nav a.active { /* Style for active category */
+      background-color: rgba(255, 255, 255, 0.2);
+      outline: none; /* Remove default focus outline */
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 20px; /* More padding */
+      background-color: #f0f0f0;
+      color: var(--text-color);
+    }
+
+    .hero h1 {
+      font-size: 3em; /* Larger heading */
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .hero p {
+      font-size: 1.3em;
+      color: #555;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      text-align: center;
+      margin: var(--padding-md) auto; /* Center with auto margins */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px; /* More space between inputs */
+      padding: 0 var(--padding-md); /* Add horizontal padding */
+      max-width: 800px; /* Constrain search bar width */
+    }
+
+    .search-bar input {
+      padding: 10px 15px; /* Increased padding */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 280px; /* Slightly larger width */
+      max-width: 100%; /* Ensure responsiveness */
+      box-sizing: border-box;
+      font-size: 1em;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(128, 0, 0, 0.2);
+      outline: none;
+    }
+
+    /* Product Grid */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly larger minmax */
+      gap: var(--gap-md);
+      padding: var(--padding-md);
+      max-width: 1200px;
+      margin: 0 auto;
+      flex-grow: 1; /* Allow products section to grow and push footer down */
+    }
+
+    .product {
+      background: var(--card-bg);
+      border-radius: var(--border-radius-md);
+      padding: var(--padding-sm);
+      text-align: center;
+      box-shadow: var(--shadow-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden; /* Ensure nothing breaks out */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+
+    .product img {
+      width: 100%;
+      /* New: Use aspect-ratio for better image fitting without fixed height */
+      height: 200px; /* Fallback height for older browsers and for consistent initial sizing */
+      max-height: 250px; /* Max height to prevent excessively tall images */
+      aspect-ratio: 4/3; /* Common aspect ratio for paintings (adjust as needed) */
+      object-fit: cover; /* Changed to cover for better image display without stretching/shrinking */
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: transform 0.3s ease; /* Smooth hover effect */
+      background-color: #eee; /* Background for placeholder/loading */
+    }
+
+    .product img:hover {
+      transform: scale(1.03); /* Slight zoom on hover */
+    }
+
+    .product h3 {
+      font-size: 1.4em;
+      margin-bottom: 5px;
+      color: var(--accent-color);
+      white-space: nowrap; /* Prevent name from wrapping too much */
+      overflow: hidden;
+      text-overflow: ellipsis; /* Add ellipsis if name is too long */
+    }
+
+    .product p {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .product-actions {
+      margin-top: auto; /* Pushes actions to the bottom */
+      display: flex; /* Make buttons flex */
+      justify-content: center; /* Center buttons */
+      flex-wrap: wrap; /* Allow buttons to wrap */
+      gap: 8px; /* Space between buttons */
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      flex-shrink: 0; /* Prevent buttons from shrinking */
+    }
+
+    button:hover, button:focus {
+      background-color: var(--button-hover-darken);
+      transform: translateY(-2px); /* Slight lift on hover */
+      outline: none;
+    }
+
+    /* Like button specific styling */
+    .like-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background-color: #ccc; /* Default grey for unliked */
+        color: var(--text-color);
+    }
+
+    .like-btn.liked {
+        background-color: #e74c3c; /* Red for liked */
+        color: white;
+    }
+
+    .like-btn:hover {
+        background-color: #bbb; /* Lighter grey on hover */
+        transform: translateY(-2px);
+    }
+
+    .like-btn.liked:hover {
+        background-color: #c0392b; /* Darker red on hover */
+    }
+
+    .heart-icon {
+        font-size: 1.2em;
+        line-height: 1; /* Adjust vertical alignment of icon */
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: var(--padding-md);
+      background: var(--accent-color);
+      color: white;
+      margin-top: auto; /* Pushes footer to the bottom */
+    }
+
+    /* Modals & Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 99; /* Changed to 99 to allow modal to be 100 */
+      display: none;
+      opacity: 0; /* Start with opacity 0 for animation */
+      transition: opacity 0.3s ease; /* Fade effect */
+    }
+    .overlay.show {
+      opacity: 1;
+      display: block; /* Show the overlay for animation */
+    }
+
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9); /* Start slightly smaller for animation */
+      background: var(--card-bg);
+      padding: var(--padding-md);
+      border-radius: var(--border-radius-md);
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      display: none; /* Hidden by default */
+      z-index: 100; /* Above overlay */
+      width: 90%;
+      max-width: 450px;
+      box-sizing: border-box;
+      text-align: center;
+      opacity: 0; /* Start with opacity 0 for animation */
+      transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Pop-in effect */
+    }
+    .modal.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      display: block; /* Show the modal for animation */
+    }
+
+
+    .modal h2 {
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+      font-size: 1.6em;
+    }
+
+    #modal-cart-content, #modal-likes-content {
+      text-align: left;
+      margin-bottom: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    #modal-cart-content .cart-item, #modal-likes-content .liked-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed #eee;
+      font-size: 1.1em;
+    }
+
+    #modal-cart-content .cart-item:last-child, #modal-likes-content .liked-item:last-child {
+      border-bottom: none;
+    }
+
+    .modal-total {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      color: var(--accent-color);
+      text-align: right; /* Align total right */
+      padding-right: 10px;
+    }
+
+    .modal-close-btn {
+      margin-top: 1.5rem;
+      background-color: var(--secondary-button-color);
+      padding: 12px 25px; /* Larger close button */
+      font-size: 1em;
+    }
+    .modal-close-btn:hover {
+      background-color: var(--secondary-button-hover);
+    }
+
+    /* Custom Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1em;
+      z-index: 1001; /* Above modals */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .toast-notification.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Empty State for product list */
+    .products > p { /* Target the paragraph directly inside .products */
+      grid-column: 1 / -1; /* Make empty message span all columns */
+      text-align: center;
+      font-size: 1.2em;
+      color: #666;
+      padding: 20px;
+    }
+
+
+    /* --- Responsive Adjustments --- */
+
+    /* For screens smaller than 768px */
+    @media (max-width: 767px) {
+      header {
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .logo {
+        margin-bottom: 15px;
+      }
+
+      nav {
+        width: 100%;
+        justify-content: space-around;
+        gap: 10px; /* Reduced gap */
+      }
+
+      nav a {
+        flex-grow: 1;
+        text-align: center;
+        padding: 8px 5px;
+        font-size: 0.9em; /* Slightly smaller font */
+      }
+
+      .hero {
+        padding: 40px 15px;
+      }
+
+      .hero h1 {
+        font-size: 2.2em;
+      }
+
+      .hero p {
+        font-size: 1.1em;
+      }
+
+      .search-bar {
+        flex-direction: column; /* Stack inputs vertically */
+        gap: 15px;
+        padding: 0 15px;
+      }
+
+      .search-bar input {
+        width: 100%;
+        max-width: 350px; /* Max width for stacked inputs */
+      }
+
+      .products {
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .product {
+        padding: 15px;
+      }
+
+      .product-actions {
+        flex-direction: column; /* Stack buttons vertically in product card */
+        gap: 10px;
+      }
+
+      button {
+        width: 100%;
+        margin: 0; /* Remove horizontal margin when stacked */
+      }
+
+      .modal {
+        width: 95%;
+        padding: 20px;
+      }
+
+      #modal-cart-content, #modal-likes-content {
+        max-height: 250px; /* Adjust height for smaller screens */
+      }
+
+      .modal-close-btn {
+        width: 100%;
+        margin-top: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">🎨 PaintingStore</div>
+    <nav>
+      <a onclick="showAll()" data-category="all">Home</a>
+      <a onclick="filterCategory('Traditional')" data-category="Traditional">Traditional</a>
+      <a onclick="filterCategory('Nature')" data-category="Nature">Nature</a>
+      <a onclick="filterCategory('Woman')" data-category="Woman">Women</a>
+      <a onclick="showCart()" id="cart-nav-link">Cart 🛒 <span id="cart-count">0</span></a>
+      <a onclick="showLikes()" id="likes-nav-link">Likes ❤️</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Discover Stunning Paintings</h1>
+    <p>Traditional | Nature | Women</p>
+  </section>
+
+  <section class="search-bar">
+    <input type="text" id="searchName" placeholder="Search by name...">
+    <input type="number" id="searchPrice" placeholder="Max price...">
+  </section>
+
+  <section class="products" id="product-list">
+    </section>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="modal" id="cart-modal">
+    <h2>Your Cart</h2>
+    <div id="modal-cart-content">
+      </div>
+    <div class="modal-total">Total: ₹<span id="cart-total-display">0.00</span></div>
+    <button class="modal-close-btn" data-modal="cart-modal">Close</button>
+  </div>
+
+  <div class="modal" id="likes-modal">
+    <h2>Your Liked Paintings</h2>
+    <div id="modal-likes-content">
+      </div>
+    <button class="modal-close-btn" data-modal="likes-modal">Close</button>
+  </div>
+
+  <div id="toast-notification" class="toast-notification"></div>
+
+  <footer>
+    <p>&copy; 2025 PaintingStore. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // --- 1. Product Data (Moved to JS for dynamic rendering) ---
+    const productsData = [
+        { id: 'p1', name: 'Saraswati Traditional Art', price: 1500, category: 'Traditional', imageUrl: 'saraswathipainting.webp' },
+        { id: 'p2', name: 'Gods Painting', price: 1500, category: 'Traditional', imageUrl: 'godpaintings.jpg' },
+        { id: 'p3', name: 'Ganesha Painting', price: 1500, category: 'Traditional', imageUrl: 'ganesh.jpg' },
+        { id: 'p5', name: 'Nature Beauty - Forest', price: 2000, category: 'Nature', imageUrl: 'nature1.jpg' },
+        { id: 'p6', name: 'Nature Beauty - Waterfall', price: 2000, category: 'Nature', imageUrl: 'nature2.jpeg' },
+        { id: 'p7', name: 'Nature Beauty - Mountains', price: 2000, category: 'Nature', imageUrl: 'nature3.jpg' },
+        { id: 'p8', name: 'Nature Beauty - Lake', price: 2000, category: 'Nature', imageUrl: 'nature4.jpg' },
+        { id: 'p9', name: 'Nature Beauty - Sunset', price: 2000, category: 'Nature', imageUrl: 'nature5.jpg' },
+        { id: 'p10', name: 'Woman Portrait - Serene', price: 2200, category: 'Woman', imageUrl: 'womenpainting.jpg' },
+        { id: 'p11', name: 'Woman Portrait - Elegant', price: 2200, category: 'Woman', imageUrl: 'womenpainting2.webp' },
+        { id: 'p12', name: 'Woman Portrait - Classic', price: 2200, category: 'Woman', imageUrl: 'womenpainting3.jpg' },
+        { id: 'p13', name: 'Woman Portrait - Modern', price: 2200, category: 'Woman', imageUrl: 'womenpainting4.jpg' },
+    ];
+
+    // --- 2. Global State Variables (Using localStorage for persistence) ---
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    let likedItems = JSON.parse(localStorage.getItem('likedItems')) || [];
+
+    // --- 3. DOM Elements ---
+    const productList = document.getElementById('product-list');
+    const cartCountSpan = document.getElementById('cart-count');
+    const searchNameInput = document.getElementById('searchName');
+    const searchPriceInput = document.getElementById('searchPrice');
+
+    const overlay = document.getElementById('overlay');
+    const cartModal = document.getElementById('cart-modal');
+    const likesModal = document.getElementById('likes-modal');
+    const modalCartContent = document.getElementById('modal-cart-content');
+    const modalLikesContent = document.getElementById('modal-likes-content');
+    const cartTotalDisplay = document.getElementById('cart-total-display');
+    const toastNotification = document.getElementById('toast-notification');
+
+    // --- 4. Helper Functions ---
+
+    // Shows a temporary toast notification
+    function showToast(message, duration = 3000) {
+      toastNotification.innerText = message;
+      toastNotification.classList.add('show');
+      setTimeout(() => {
+        toastNotification.classList.remove('show');
+      }, duration);
+    }
+
+    // --- 5. Core Functions ---
+
+    // Renders products based on a filtered list
+    function renderProducts(filteredProducts = productsData) {
+      productList.innerHTML = ''; // Clear existing products
+
+      if (filteredProducts.length === 0) {
+        productList.innerHTML = '<p>No paintings found matching your criteria.</p>';
+        return;
+      }
+
+      filteredProducts.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('product');
+        // Add data attributes for filtering
+        productDiv.setAttribute('data-name', product.name);
+        productDiv.setAttribute('data-price', product.price);
+        productDiv.setAttribute('data-category', product.category);
+
+        const isLiked = likedItems.some(item => item.id === product.id);
+
+        productDiv.innerHTML = `
+            <img src="${product.imageUrl}" alt="${product.name}" loading="lazy">
+            <h3>${product.name}</h3>
+            <p>₹${product.price.toFixed(2)}</p>
+            <div class="product-actions">
+                <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+                <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${product.id}">
+                    Like <span class="heart-icon">${isLiked ? '❤️' : '♡'}</span>
+                </button>
+            </div>
+        `;
+        productList.appendChild(productDiv);
+      });
+    }
+
+    // Filters products based on search input and category
+    function filterProducts() {
+      const nameFilter = searchNameInput.value.toLowerCase().trim();
+      const priceFilter = parseFloat(searchPriceInput.value); // Use parseFloat for price
+      const activeCategoryLink = document.querySelector('nav a.active');
+      // Default to 'all' if no category is active, otherwise get its data-category
+      const activeCategory = activeCategoryLink ? activeCategoryLink.dataset.category : 'all';
+
+      const filtered = productsData.filter(product => {
+        const matchesName = product.name.toLowerCase().includes(nameFilter);
+        // Check if priceFilter is a valid number before comparing
+        const matchesPrice = isNaN(priceFilter) || product.price <= priceFilter;
+        // Only include products that match the active category, or all if 'all' is active
+        const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
+        return matchesName && matchesPrice && matchesCategory;
+      });
+
+      renderProducts(filtered);
+    }
+
+    // Add/Remove from Cart
+    function addToCart(productId) {
+      const product = productsData.find(p => p.id === productId);
+      if (product) {
+        const existingCartItem = cartItems.find(item => item.id === productId);
+        if (existingCartItem) {
+          existingCartItem.quantity = (existingCartItem.quantity || 1) + 1; // Increment quantity
+        } else {
+          cartItems.push({ ...product, quantity: 1 }); // Add with quantity 1
+        }
+        localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Save to localStorage
+        updateCartCount();
+        showToast(`${product.name} added to cart!`);
+      }
+    }
+
+    function removeFromCart(productId) {
+      cartItems = cartItems.filter(item => item.id !== productId);
+      localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Save to localStorage
+      updateCartCount();
+      showCart(); // Refresh cart modal to reflect changes
+      showToast('Item removed from cart.');
+    }
+
+    function updateCartCount() {
+      const totalCount = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      cartCountSpan.innerText = totalCount;
+      const totalAmount = cartItems.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
+      cartTotalDisplay.innerText = totalAmount.toFixed(2);
+    }
+
+    // Like/Unlike function
+    function toggleLike(productId) {
+      const product = productsData.find(p => p.id === productId);
+      if (product) {
+        const index = likedItems.findIndex(item => item.id === productId);
+        if (index > -1) {
+          likedItems.splice(index, 1); // Unlike
+          showToast(`"${product.name}" unliked.`);
+        } else {
+          likedItems.push(product); // Like
+          showToast(`You liked: "${product.name}"!`);
+        }
+        localStorage.setItem('likedItems', JSON.stringify(likedItems)); // Save to localStorage
+        // Re-render products to update the like icon immediately
+        filterProducts(); // Call filterProducts to re-render with current filters
+      }
+    }
+
+    // --- 6. Modal Functions ---
+    function openModal(modalElement) {
+      overlay.style.display = 'block'; // Make sure it's block before adding show
+      modalElement.style.display = 'block'; // Make sure it's block before adding show
+      requestAnimationFrame(() => { // Use rAF to ensure display:block applies before transition
+          overlay.classList.add('show'); // Trigger overlay animation
+          modalElement.classList.add('show'); // Trigger modal animation
+      });
+    }
+
+    function closeModal(modalElement) {
+      overlay.classList.remove('show');
+      modalElement.classList.remove('show');
+      // Ensure display: none is applied after transition for true hiding
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        modalElement.style.display = 'none';
+      }, 300); // Match CSS transition duration
+    }
+
+    function showCart() {
+      modalCartContent.innerHTML = '';
+      if (cartItems.length === 0) {
+        modalCartContent.innerHTML = '<p>Your cart is empty.</p>';
+        cartTotalDisplay.innerText = '0.00'; // Reset total if cart is empty
+      } else {
+        cartItems.forEach(item => {
+          const itemDiv = document.createElement('div');
+          itemDiv.classList.add('cart-item');
+          itemDiv.innerHTML = `
+              <span>${item.name} (x${item.quantity || 1})</span>
+              <span>₹${(item.price * (item.quantity || 1)).toFixed(2)}
+                  <button data-id="${item.id}" class="remove-from-cart-btn">Remove</button>
+              </span>
+          `;
+          modalCartContent.appendChild(itemDiv);
+        });
+        // Attach event listeners for remove buttons
+        modalCartContent.querySelectorAll('.remove-from-cart-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idToRemove = e.target.dataset.id;
+            removeFromCart(idToRemove);
+          });
+        });
+      }
+      updateCartCount(); // Ensure total is updated for display
+      openModal(cartModal);
+    }
+
+    function showLikes() {
+      modalLikesContent.innerHTML = '';
+      if (likedItems.length === 0) {
+        modalLikesContent.innerHTML = '<p>No liked paintings yet.</p>';
+      } else {
+        likedItems.forEach(item => {
+          const itemDiv = document.createElement('div');
+          itemDiv.classList.add('liked-item');
+          itemDiv.innerHTML = `
+              <span>${item.name}</span>
+              <span>₹${item.price.toFixed(2)}
+                  <button data-id="${item.id}" class="unlike-btn">Unlike</button>
+              </span>
+          `;
+          modalLikesContent.appendChild(itemDiv);
+        });
+        // Attach event listeners for unlike buttons
+        modalLikesContent.querySelectorAll('.unlike-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idToUnlike = e.target.dataset.id;
+            toggleLike(idToUnlike); // Use toggleLike to remove from likedItems
+            showLikes(); // Refresh likes modal
+          });
+        });
+      }
+      openModal(likesModal);
+    }
+
+    // --- 7. Event Listeners (using Event Delegation where possible) ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts(); // Initial render of all products
+      updateCartCount(); // Initialize cart count
+
+      // Event listener for product actions (Add to Cart, Like) using delegation
+      productList.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target.classList.contains('add-to-cart-btn')) {
+          addToCart(target.dataset.id);
+        } else if (target.classList.contains('like-btn') || target.closest('.like-btn')) { // Check if like button or its child (heart icon) was clicked
+          const btn = target.closest('.like-btn'); // Ensure we get the button element
+          toggleLike(btn.dataset.id);
+        }
+      });
+
+      // Event listeners for navigation links
+      document.querySelectorAll('nav a').forEach(link => {
+        // Assign data-category if not already present from HTML
+        if (!link.dataset.category) {
+            const linkText = link.textContent.split(' ')[0]; // Get first word like "Home", "Cart"
+            if (linkText === 'Home') {
+                link.dataset.category = 'all';
+            } else if (linkText === 'Traditional' || linkText === 'Nature' || linkText === 'Women') {
+                link.dataset.category = linkText;
+            }
+            // For Cart and Likes, no category is set, they handle their own clicks
+        }
+
+        link.addEventListener('click', (e) => {
+          // Only prevent default for category links, not cart/likes
+          if (link.dataset.category) {
+            e.preventDefault();
+            // Remove active class from previous and add to current
+            document.querySelectorAll('nav a').forEach(navLink => navLink.classList.remove('active'));
+            link.classList.add('active');
+
+            const category = link.dataset.category;
+            // Clear search inputs when navigating by category
+            searchNameInput.value = '';
+            searchPriceInput.value = '';
+
+            filterProducts(); // Re-filter based on newly active category
+          }
+        });
+      });
+
+      // Set initial active category for "Home"
+      document.querySelector('nav a[data-category="all"]').classList.add('active');
+
+
+      // Event listeners for search inputs
+      searchNameInput.addEventListener('input', filterProducts); // Use 'input' for real-time filtering
+      searchPriceInput.addEventListener('input', filterProducts); // Use 'input' for real-time filtering
+
+      // Event listeners for modal toggle buttons
+      // These are already in the HTML `onclick` but better to move to JS
+      // document.getElementById('cart-nav-link').addEventListener('click', showCart); // Already handled by nav a click
+      // document.getElementById('likes-nav-link').addEventListener('click', showLikes); // Already handled by nav a click
+
+      // Event listeners for modal close buttons (using delegation for multiple modals)
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const modalToCloseId = e.target.dataset.modal;
+          closeModal(document.getElementById(modalToCloseId));
+        });
+      });
+
+      // Close modal when clicking outside (on overlay)
+      overlay.addEventListener('click', () => {
+        // Check which modal is currently open and close it
+        if (cartModal.classList.contains('show')) {
+          closeModal(cartModal);
+        }
+        if (likesModal.classList.contains('show')) {
+          closeModal(likesModal);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
